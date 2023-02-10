@@ -1,23 +1,13 @@
 window.onload=principal;
 
+import { getItems } from "../firebase.js";
 
-// let url = window.location.href;
-
-// localStorage.setItem("urlReportes" , url);
-
-// let pantalla = localStorage.getItem("urlPatallaIncial");
-// let admin = localStorage.getItem("urlAdmin");
-// let ventas = localStorage.getItem("urlVentas");
-// let anulacion = localStorage.getItem("urlAnulacion");
-// let movimientos = localStorage.getItem("urlMovimientos");
-// let registrar = localStorage.getItem("urlRegistrarClientes");
-// let cobranza = localStorage.getItem("urlCobranza");
 
 function principal(){
     document.getElementById("brnAceptar").addEventListener("click", aceptarOpcion)
 }
 
-var fecha=new Date;
+const fecha = new Date();
 
 async function aceptarOpcion(){
 
@@ -44,11 +34,11 @@ async function aceptarOpcion(){
             </tr>
             `
     
-            let estado=await axios.get("http://localhost:3001/EstadoDeCaja");
+            let estado=await getItems("EstadoDeCaja");
             let efectivo;
             let cc;
             let tarjeta;
-            for (let item of estado.data) {
+            for (let item of estado) {
                 if (item.id==1) {
                    efectivo=item.efectivo;
                     
@@ -81,23 +71,23 @@ async function aceptarOpcion(){
                 <th scope="col">total</th>
             </tr>
             `
-            let ventas=await axios.get("http://localhost:3001/ventas");
-            let articulos=await axios.get("http://localhost:3001/articulo");
-            let tipoVenta=await axios.get("http://localhost:3001/tipoVenta")
+            let ventas=await getItems("ventas");
+            let articulos=await getItems("articulo");
+            let tipoVenta=await getItems("tipoVenta")
             let nom;
             let tipo;
          
-            for (let item of ventas.data) {
+            for (let item of ventas) {
                 if (item.estadoVentaId !== 2){ 
                   
                                     
-                    for (let item2 of articulos.data) {
+                    for (let item2 of articulos) {
                         if (item.articuloId==item2.id) {
                             nom=item2.nombre;
                         }
                     }
     
-                    for (let item3 of tipoVenta.data) {
+                    for (let item3 of tipoVenta) {
                         if (item.tipoVentaId==item3.id) {
                             tipo=item3.tipo;
                         }
@@ -131,28 +121,30 @@ async function aceptarOpcion(){
                 <th scope="col">total</th>
             </tr>
             `
-            let ventas=await axios.get("http://localhost:3001/ventas");
-            let articulos=await axios.get("http://localhost:3001/articulo");
-            let tipoVenta=await axios.get("http://localhost:3001/tipoVenta")
+            let ventas=await getItems("ventas");
+            let articulos=await getItems("articulo");
+            let tipoVenta=await getItems("tipoVenta")
             let total_dia = 0;
             let nom;
             let tipo;
             
 
-           
+      
 
-            for (let item of ventas.data) {
-                    if (item.dia==fecha.getDate() && item.mes == fecha.getMonth() && item.estadoVenta==1 && item.tipoVentaId==1 || item.tipoVentaId==2 || item.tipoVentaId == 3) {
+            for (let item of ventas) {
+                    if ((item.dia == fecha.getDay() && item.mes == fecha.getMonth())) {
+                        if (item.estadoVenta == "1"){
+                            
                     let precio = parseInt( item.totalVenta)
                      total_dia = total_dia + precio;
 
-                    for (let item2 of articulos.data) {
+                    for (let item2 of articulos) {
                         if (item.articuloId==item2.id) {
                             nom=item2.nombre;
                         }
                     }
     
-                    for (let item3 of tipoVenta.data) {
+                    for (let item3 of tipoVenta) {
                         if (item.tipoVentaId==item3.id) {
                             tipo=item3.tipo;
                         }
@@ -179,7 +171,7 @@ async function aceptarOpcion(){
                 <td>${total_dia}</td>
             </tr>`;
             
-              
+            }  
         }
         if (reporte=="ventasDelMes") {
          
@@ -193,26 +185,26 @@ async function aceptarOpcion(){
                 <th scope="col">total</th>
             </tr>
             `
-            let ventas=await axios.get("http://localhost:3001/ventas");
-            let articulos=await axios.get("http://localhost:3001/articulo");
-            let tipoVenta=await axios.get("http://localhost:3001/tipoVenta")
+            let ventas=await getItems("ventas");
+            let articulos=await getItems("articulo");
+            let tipoVenta=await getItems("tipoVenta")
             let nom;
             let tipo;
             let total_mes = 0;
 
-            for (let item of ventas.data) {
-                if (item.mes==fecha.getMonth() && item.estadoVenta==1 && item.tipoVentaId==1 || item.tipoVentaId==2 || item.tipoVentaId==3) {
+            for (let item of ventas) {
+                if (item.mes==fecha.getMonth() && item.estadoVenta==1) {
                   
                     let precio = parseInt(item.totalVenta);
                     total_mes = total_mes + precio;  
                      
-                    for (let item2 of articulos.data) {
+                    for (let item2 of articulos) {
                         if (item.articuloId==item2.id) {
                             nom=item2.nombre;
                         }
                     }
     
-                    for (let item3 of tipoVenta.data) {
+                    for (let item3 of tipoVenta) {
                         if (item.tipoVentaId==item3.id) {
                             tipo=item3.tipo;
                         }
@@ -255,18 +247,18 @@ async function aceptarOpcion(){
             `
     
     
-            let ventaContado=await axios.get("http://localhost:3001/ventas");
+            let ventaContado=await getItems("ventas");
             let total1=0;
-            for (let item of ventaContado.data) {
-                if (item.tipoVentaId==1 && item.estadoVentaId!=2) {
+            for (let item of ventaContado) {
+                if (item.tipoVentaId=="1" && item.estadoVenta!="2") {
                     
                     let total=parseInt(item.totalVenta)
     
                     total1=total1+total;
     
-                    let art=await axios.get("http://localhost:3001/articulo");
+                    let art=await getItems("articulo");
     
-                    for (let item2 of art.data) {
+                    for (let item2 of art) {
                         if (item2.id==item.articuloId) {
                             nombre=item2.nombre;
                             break;
@@ -306,18 +298,18 @@ async function aceptarOpcion(){
     
             `
     
-            let ventaCuentaCorriente=await axios.get("http://localhost:3001/ventas"); 
+            let ventaCuentaCorriente=await getItems("ventas"); 
             let total1=0;
-            for (let item of ventaCuentaCorriente.data) {
-                if (item.tipoVentaId==2 && item.estadoVentaI!=2) {
+            for (let item of ventaCuentaCorriente) {
+                if (item.tipoVentaId=="2" && item.estadoVenta!="2") {
                     
                     let total=parseInt(item.totalVenta)
     
                     total1=total1+total;
     
-                    let arti=await axios.get("http://localhost:3001/articulo");
+                    let arti=await getItems("articulo");
                 
-                    for (let item2 of arti.data) {
+                    for (let item2 of arti) {
                         if (item2.id==item.articuloId) {
                             articulo=item2.nombre;
                             break;
@@ -325,9 +317,9 @@ async function aceptarOpcion(){
                         }
                     }
     
-                    let cli=await axios.get("http://localhost:3001/clientes");
+                    let cli=await getItems("clientes");
     
-                    for (let item3 of cli.data) {
+                    for (let item3 of cli) {
                         if (item3.id==item.clientesId) {
                             Cliente=item3.nomYape;
                             break;
@@ -368,18 +360,18 @@ async function aceptarOpcion(){
             `
     
     
-            let ventaContado=await axios.get("http://localhost:3001/ventas");
+            let ventaContado=await getItems("ventas");
             let total1=0;
-            for (let item of ventaContado.data) {
-                if (item.tipoVentaId==3 && item.estadoVentaId!=2) {
+            for (let item of ventaContado) {
+                if (item.tipoVentaId=="3" && item.estadoVenta!="2") {
                     
                     let total=parseInt(item.totalVenta)
     
                     total1=total1+total;
     
-                    let art=await axios.get("http://localhost:3001/articulo");
+                    let art=await getItems("articulo");
     
-                    for (let item2 of art.data) {
+                    for (let item2 of art) {
                         if (item2.id==item.articuloId) {
                             nombre=item2.nombre;
                             break;
@@ -416,19 +408,19 @@ async function aceptarOpcion(){
             </tr>
 
             `
-            let venta=await axios.get("http://localhost:3001/ventas"); 
+            let venta=await getItems("ventas"); 
             let total1=0;
             let articulo;
-                for (let item of venta.data) {
-                    if (item.estadoVentaId==2) {
+                for (let item of venta) {
+                    if (item.estadoVenta == "2") {
                         
                         let total=parseInt(item.totalVenta)
 
                         total1=total1+total;
 
-                        let arti=await axios.get("http://localhost:3001/articulo");
+                        let arti=await getItems("articulo");
                     
-                        for (let item2 of arti.data) {
+                        for (let item2 of arti) {
                             if (item2.id==item.articuloId) {
                                 articulo=item2.nombre;
                                 break;
@@ -436,9 +428,9 @@ async function aceptarOpcion(){
                             }
                         }
 
-                        let cli=await axios.get("http://localhost:3001/clientes");
+                        let cli=await getItems("clientes");
 
-                        for (let item3 of cli.data) {
+                        for (let item3 of cli) {
                             if (item3.id==item.clientesId) {
                                 Cliente=item3.nomYape;
                                 break;
@@ -477,14 +469,14 @@ async function aceptarOpcion(){
 
                     `
 
-                    let clientes=await axios.get("http://localhost:3001/clientes");
-                    let cc=await axios.get("http://localhost:3001/cuentaCorriente");
+                    let clientes=await getItems("clientes");
+                    let cc=await getItems("cuentaCorriente");
                     let total1=0;
                     let total;
                     let nombre;
 
-                    for (let item of cc.data) {
-                        for (let item2 of clientes.data) {
+                    for (let item of cc) {
+                        for (let item2 of clientes) {
                             if (item.clientesId==item2.id) {
                                 nombre=item2.nomYape;
                                 break;
@@ -532,11 +524,11 @@ async function aceptarOpcion(){
         
                 `
                 let nombrcliente;
-                let pagos=await axios.get("http://localhost:3001/pagosCuentaCorriente");
-                let cliente=await axios.get("http://localhost:3001/clientes");
-                for (let item2 of cliente.data) {
+                let pagos=await getItems("pagosCuentaCorriente");
+                let cliente=await getItems("clientes");
+                for (let item2 of cliente) {
                     
-                    for (let item of pagos.data) {
+                    for (let item of pagos) {
         
                         if (item.clientesId==item2.id) {
                                 document.getElementById("tablaMuestra").innerHTML+=
@@ -552,6 +544,7 @@ async function aceptarOpcion(){
                  }
              }
              if (reporte=="stockCompleto") {
+                let cat;
                 document.getElementById("cabezaTabla").innerHTML+=
                 `
                 <tr>
@@ -564,19 +557,19 @@ async function aceptarOpcion(){
                 </tr>
         
                 `
-                 let stock=await axios.get("http://localhost:3001/articulo");
-                 for (let item of stock.data) {
+                 let stock=await getItems("articulo");
+                 for (let item of stock) {
                     switch (item.categoriaId) {
-                        case 1:
+                        case "1":
                              cat="comestibles";
                              break;
-                       case 2:
+                       case "2":
                              cat="bebidas";
                           break;
-                      case 3:
+                      case "3":
                              cat="cigarrilos";
                           break;
-                    case 4:
+                    case "4":
                             cat="golosinas";
                         break;
                      
@@ -596,6 +589,7 @@ async function aceptarOpcion(){
                  }
              }
              if (reporte=="stockCritico") {
+                let cat;
                 document.getElementById("cabezaTabla").innerHTML+=
                 `
                 <tr>
@@ -608,19 +602,19 @@ async function aceptarOpcion(){
                 </tr>
         
                 `
-                 let stock=await axios.get("http://localhost:3001/articulo");
-                 for (let item of stock.data) {
+                 let stock=await getItems("articulo");
+                 for (let item of stock) {
                     switch (item.categoriaId) {
-                        case 1:
+                        case "1":
                              cat="comestibles";
                              break;
-                       case 2:
+                       case "2":
                              cat="bebidas";
                           break;
-                      case 3:
+                      case "3":
                              cat="cigarrilos";
                           break;
-                    case 4:
+                    case "4":
                             cat="golosinas";
                         break;
                      
@@ -643,7 +637,8 @@ async function aceptarOpcion(){
                  }
              }
              if (reporte=="stockCero") {
-                 
+                 let cat;
+
                 document.getElementById("cabezaTabla").innerHTML+=
                 `
                 <tr>
@@ -656,19 +651,19 @@ async function aceptarOpcion(){
                 </tr>
         
                 `
-                 let stock=await axios.get("http://localhost:3001/articulo");
-                 for (let item of stock.data) {
+                 let stock=await getItems("articulo");
+                 for (let item of stock) {
                     switch (item.categoriaId) {
-                        case 1:
+                        case "1":
                              cat="comestibles";
                              break;
-                       case 2:
+                       case "2":
                              cat="bebidas";
                           break;
-                      case 3:
+                      case "3":
                              cat="cigarrilos";
                           break;
-                    case 4:
+                    case "4":
                             cat="golosinas";
                         break;
                      
@@ -704,9 +699,9 @@ async function aceptarOpcion(){
         
                 `
 
-                let movEntrada=await axios.get("http://localhost:3001/ingresoDinero");
+                let movEntrada=await getItems("ingresoDinero");
             
-                for (let item of movEntrada.data) {
+                for (let item of movEntrada) {
 
                     document.getElementById("tablaMuestra").innerHTML+= 
                          `
@@ -720,9 +715,9 @@ async function aceptarOpcion(){
 
             
 
-                let salDinero=await axios.get("http://localhost:3001/salidaDinero");
+                let salDinero=await getItems("salidaDinero");
            
-                for (let item of salDinero.data) {
+                for (let item of salDinero) {
                     document.getElementById("tablaMuestra").innerHTML+= 
                     `
                     

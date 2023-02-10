@@ -208,76 +208,84 @@ async function aceptarVentaContado() {
       idCat = item.categoriaId;
     }
   }
+if (nombre != "") {
 
-  if (cantidad > 0 && cantidad <= cant) {
-    let EstadoCaja = await getItems("EstadoDeCaja");
-    let totalViejo;
+          if (cantidad > 0 && cantidad <= cant) {
+            let EstadoCaja = await getItems("EstadoDeCaja");
+            let totalViejo;
 
-    for (let item of EstadoCaja) {
-      if (item.id == 1) {
-        totalViejo = item.efectivo;
-      }
-    }
+            for (let item of EstadoCaja) {
+              if (item.id == 1) {
+                totalViejo = item.efectivo;
+              }
+            }
 
-    let total1 = parseInt(totalViejo) + parseInt(total);
+            let total1 = parseInt(totalViejo) + parseInt(total);
 
-    let nuevoDato = {
-      efectivo: total1,
-    };
-    let idEstado = "1";
-    await modificarItem("EstadoDeCaja", idEstado, nuevoDato);
+            let nuevoDato = {
+              efectivo: total1,
+            };
+            let idEstado = "1";
+            await modificarItem("EstadoDeCaja", idEstado, nuevoDato);
 
-    await IngresarDatos("ventas", {
-      tipoVentaId: 1,
-      articuloId: artId,
-      cantidad: cantidad,
-      totalVenta: total,
-      estadoVenta: 1,
-      dia: dia,
-      mes: mes,
-    });
+            await IngresarDatos("ventas", {
+              tipoVentaId: 1,
+              articuloId: artId,
+              cantidad: cantidad,
+              totalVenta: total,
+              estadoVenta: 1,
+              dia: dia,
+              mes: mes,
+            });
 
-    let nuevaCantidad = cant - cantidad;
+            let nuevaCantidad = cant - cantidad;
 
-    let newData = {
-      nombre: nombre,
-      cantidad: nuevaCantidad,
-      PrecioCompra: PC,
-      PrecioVenta: PV,
-      categoriaId: idCat,
-    };
+            let newData = {
+              nombre: nombre,
+              cantidad: nuevaCantidad,
+              PrecioCompra: PC,
+              PrecioVenta: PV,
+              categoriaId: idCat,
+            };
 
-    await modificarItem("articulo", artId, newData);
+            await modificarItem("articulo", artId, newData);
 
-    swal({
-      title: "Venta Realizada",
-      icon: "success",
-    });
-   
+            swal({
+              title: "Venta Realizada",
+              icon: "success",
+            });
+          
 
-    document.getElementById("articuloContado").value = "";
-    document.getElementById("cantidadContado").value = "";
-    document.getElementById("totalContado").value = "0";
-  } else if (cant == 0) {
-    swal({
-      title: "NO hay stock de este procuto",
-      icon: "error",
-    });
-   
-  } else {
-    swal({
-      title: "La cantidad selecciona tiene que se mayor a 0 o menor que " +
-      cant +
-      " ya que esa es la cantidad de " +
-      nombre +
-      " disponible.",
-      icon: "error",
-    });
+            document.getElementById("articuloContado").value = "";
+            document.getElementById("cantidadContado").value = "";
+            document.getElementById("totalContado").value = "0";
+          } else if (cant == 0) {
+            swal({
+              title: "NO hay stock de este procuto",
+              icon: "error",
+            });
+          
+          } else {
+            swal({
+              title: "La cantidad selecciona tiene que se mayor a 0 o menor que " +
+              cant +
+              " ya que esa es la cantidad de " +
+              nombre +
+              " disponible.",
+              icon: "error",
+            });
+          
+            document.getElementById("articuloContado").value = "";
+            document.getElementById("cantidadContado").value = "";
+            document.getElementById("totalContado").value = "0";
+          }
+}else{
+  swal({
+    title: "Tiene que ingresar un producto",
+    icon: "error",
+  });
+}
   
-    document.getElementById("articuloContado").value = "";
-    document.getElementById("cantidadContado").value = "";
-    document.getElementById("totalContado").value = "0";
-  }
 }
 
 async function buscadorClienteCuentaCorriente() {
@@ -417,100 +425,113 @@ async function aceptarVentaCuentaCorriente() {
         idCat = item.categoriaId;
       }
     }
+          if (nombreCliente != "") {
+             if (nombre != "") {
 
-    if (cantidad > 0 && cantidad <= cant && nombreCliente != "") {
-      let estado = await getItems("EstadoDeCaja");
-      let totales;
-      let final;
-      for (let item of estado) {
-        if (item.id == 2) {
-          totales = item.ventasEnCuentaCorriente;
-        }
-      }
-      final = parseInt(totales) + parseInt(total);
-      let idEstado = "2";
-      let newEstado = {
-        ventasEnCuentaCorriente: final,
-      }
-      await modificarItem ("EstadoDeCaja" , idEstado , newEstado);
+                    if (cantidad > 0 && cantidad <= cant ) {
+                    let estado = await getItems("EstadoDeCaja");
+                    let totales;
+                    let final;
+                    for (let item of estado) {
+                      if (item.id == 2) {
+                        totales = item.ventasEnCuentaCorriente;
+                      }
+                    }
+                    final = parseInt(totales) + parseInt(total);
+                    let idEstado = "2";
+                    let newEstado = {
+                      ventasEnCuentaCorriente: final,
+                    }
+                    await modificarItem ("EstadoDeCaja" , idEstado , newEstado);
 
-      let newVenta={
-        tipoVentaId: 2,
-        articuloId: artId,
-        cantidad: cantidad,
-        totalVenta: total,
-        clientesId: clienteid,
-        estadoVenta: 1,
-        dia: dia,
-        mes: mes,
-      }
-      let article = await IngresarDatos("ventas", newVenta );
+                    let newVenta={
+                      tipoVentaId: 2,
+                      articuloId: artId,
+                      cantidad: cantidad,
+                      totalVenta: total,
+                      clientesId: clienteid,
+                      estadoVenta: 1,
+                      dia: dia,
+                      mes: mes,
+                    }
+                    let article = await IngresarDatos("ventas", newVenta );
 
-      let nuevaCantidad = cant - cantidad;
-      let ArtiModificado = {
-        nombre: nombre,
-          cantidad: nuevaCantidad,
-          PrecioCompra: PC,
-          PrecioVenta: PV,
-          categoriaId: idCat,
-      }
-      let restaDeCantidad = await modificarItem("articulo" , artId , ArtiModificado );
+                    let nuevaCantidad = cant - cantidad;
+                    let ArtiModificado = {
+                      nombre: nombre,
+                        cantidad: nuevaCantidad,
+                        PrecioCompra: PC,
+                        PrecioVenta: PV,
+                        categoriaId: idCat,
+                    }
+                    let restaDeCantidad = await modificarItem("articulo" , artId , ArtiModificado );
 
-      let cuenta = await getItems("cuentaCorriente");
+                    let cuenta = await getItems("cuentaCorriente");
 
-      for (let item of cuenta) {
-        if (item.cliente == nombreCliente) {
-          idCuenta = item.id;
-          comprobacion = true;
-          total1 = item.deuda;
-        }
-      }
+                    for (let item of cuenta) {
+                      if (item.cliente == nombreCliente) {
+                        idCuenta = item.id;
+                        comprobacion = true;
+                        total1 = item.deuda;
+                      }
+                    }
 
-      TotalCuenta = parseInt(total1) + parseInt(total);
+                    TotalCuenta = parseInt(total1) + parseInt(total);
 
-      if (comprobacion == true) {
-       await modificarItem("cuentaCorriente" , idCuenta ,
-        {   cliente: nombreCliente,
-            clientesId: clienteid,
-            deuda: TotalCuenta,
-          }
-        );
-      } else {
-        await IngresarDatos("cuentaCorriente", {
-          cliente: nombreCliente,
-          clientesId: clienteid,
-          deuda: total,
+                    if (comprobacion == true) {
+                    await modificarItem("cuentaCorriente" , idCuenta ,
+                      {   cliente: nombreCliente,
+                          clientesId: clienteid,
+                          deuda: TotalCuenta,
+                        }
+                      );
+                    } else {
+                      await IngresarDatos("cuentaCorriente", {
+                        cliente: nombreCliente,
+                        clientesId: clienteid,
+                        deuda: total,
+                      });
+                    }
+                    document.getElementById("articuloCuentaCorriente").value = "";
+                    document.getElementById("cantidadCuentaCorriente").value = "";
+                    document.getElementById("TotalCuentaCorriente").value = "0";
+                    swal({
+                      title: "Venta Realizada",
+                      icon: "success",
+                    });
+                  } else if (cant == 0) {
+                  swal({
+                    title: "NO hay stock de este procuto",
+                    icon: "error",
+                  });
+                  } else {
+                  swal({
+                    title: "La cantidad selecciona tiene que se mayor a 0 o menor que " +
+                    cant +
+                    " ya que esa es la cantidad de " +
+                    nombre +
+                    " disponible.",
+                    icon: "error",
+                  });
+                
+                  document.getElementById("cliente").value = "";
+                  document.getElementById("articuloCuentaCorriente").value = "";
+                  document.getElementById("cantidadCuentaCorriente").value = "";
+                  document.getElementById("TotalCuentaCorriente").value = "0";
+                }
+      }else{
+        swal({
+          title: "Tiene que ingresar un producto",
+          icon: "error",
         });
       }
-      document.getElementById("articuloCuentaCorriente").value = "";
-      document.getElementById("cantidadCuentaCorriente").value = "";
-      document.getElementById("TotalCuentaCorriente").value = "0";
+    }else{
       swal({
-        title: "Venta Realizada",
-        icon: "success",
-      });
-
-      
-    } else if (cant == 0) {
-      swal({
-        title: "NO hay stock de este procuto",
+        title: "Tiene que ingresar el cliente",
         icon: "error",
       });
-    } else {
-      swal({
-        title: "La cantidad selecciona tiene que se mayor a 0 o menor que " +
-        cant +
-        " ya que esa es la cantidad de " +
-        nombre +
-        " disponible.",
-        icon: "error",
-      });
-     
-      document.getElementById("cliente").value = "";
-      document.getElementById("articuloCuentaCorriente").value = "";
-      document.getElementById("cantidadCuentaCorriente").value = "";
-      document.getElementById("TotalCuentaCorriente").value = "0";
     }
+            
   } catch (err) {
     console.log(err);
   }
@@ -662,7 +683,8 @@ async function aceptarVentaTarjeta() {
     }
   }
 
-  if (cantidad > 0 && cantidad <= cant && nombre != "") {
+  if (nombre != "") {
+    if (cantidad > 0 && cantidad <= cant ) {
     try {
       let totales = await getItems("EstadoDeCaja");
 
@@ -731,4 +753,11 @@ async function aceptarVentaTarjeta() {
     document.getElementById("cantidad_tarjeta").value = "";
     document.getElementById("total_tarjeta").value = "0";
   }
+  }else{
+    swal({
+      title: "Tiene que ingresar un producto",
+      icon: "error",
+    });
+  }
+  
 }

@@ -1,0 +1,229 @@
+{
+  "login": [
+    {
+      "logeado": true,
+      "id": "1"
+    }
+  ],
+  "articulo": [
+    {
+      "nombre": "galleta sonrisa",
+      "cantidad": "12",
+      "PrecioCompra": "130",
+      "PrecioVenta": "200",
+      "categoriaId": 1,
+      "id": 1
+    },
+    {
+      "nombre": "galleta pepito",
+      "cantidad": 14,
+      "PrecioCompra": "163",
+      "PrecioVenta": "220",
+      "categoriaId": 1,
+      "id": 2
+    },
+    {
+      "nombre": "galleta oreo",
+      "cantidad": 11,
+      "PrecioCompra": "163",
+      "PrecioVenta": "220",
+      "categoriaId": 1,
+      "id": 3
+    },
+    {
+      "nombre": "galleta melba",
+      "cantidad": "12",
+      "PrecioCompra": "150",
+      "PrecioVenta": "220",
+      "categoriaId": 1,
+      "id": 4
+    },
+    {
+      "nombre": "galleta porteñita",
+      "cantidad": "14",
+      "PrecioCompra": "150",
+      "PrecioVenta": "220",
+      "categoriaId": 1,
+      "id": 5
+    },
+    {
+      "nombre": "saladix",
+      "cantidad": "12",
+      "PrecioCompra": "185",
+      "PrecioVenta": "250",
+      "categoriaId": 1,
+      "id": 6
+    },
+    {
+      "nombre": "terrabussi variedad",
+      "cantidad": "7",
+      "PrecioCompra": "295",
+      "PrecioVenta": "370",
+      "categoriaId": 1,
+      "id": 7
+    },
+    {
+      "nombre": "galleta frutigram",
+      "cantidad": "6",
+      "PrecioCompra": "280",
+      "PrecioVenta": "350",
+      "categoriaId": 1,
+      "id": 8
+    },
+    {
+      "nombre": "galleta opera",
+      "cantidad": "8",
+      "PrecioCompra": "125",
+      "PrecioVenta": "200",
+      "categoriaId": 1,
+      "id": 9
+    },
+    {
+      "nombre": "Magdalena Don Satur",
+      "cantidad": "4",
+      "PrecioCompra": "125",
+      "PrecioVenta": "220",
+      "categoriaId": 1,
+      "id": 10
+    }
+  ],
+  "categoria": [
+    {
+      "id": 1,
+      "tipo": "comestibles"
+    },
+    {
+      "id": 2,
+      "tipo": "bebidas"
+    },
+    {
+      "id": 3,
+      "tipo": "cigarrilos"
+    },
+    {
+      "id": 4,
+      "tipo": "golosinas"
+    }
+  ],
+  "tipoVenta": [
+    {
+      "id": 1,
+      "tipo": "contado"
+    },
+    {
+      "id": 2,
+      "tipo": "cuentaCorriente"
+    },
+    {
+      "id": 3,
+      "tipo": "Trasferencia"
+    }
+  ],
+  "ventas": [
+    {
+      "tipoVentaId": 1,
+      "articuloId": 2,
+      "cantidad": 1,
+      "totalVenta": "220",
+      "estadoVenta": 1,
+      "dia": 8,
+      "mes": 1,
+      "id": 1
+    },
+    {
+      "tipoVentaId": 2,
+      "articuloId": 3,
+      "cantidad": 1,
+      "totalVenta": "220",
+      "clientesId": 1,
+      "estadoVentaId": 1,
+      "dia": 8,
+      "mes": 1,
+      "id": 2
+    }
+  ],
+  "estadoVenta": [
+    {
+      "id": 1,
+      "estado": "habilitada"
+    },
+    {
+      "id": 2,
+      "estado": "anulada"
+    }
+  ],
+  "estadocliente": [
+    {
+      "id": 1,
+      "estado": "habilitado"
+    },
+    {
+      "id": 2,
+      "estado": "inhabilitado"
+    }
+  ],
+  "clientes": [
+    {
+      "nomYape": "lucas leiro",
+      "dni": "43562794",
+      "direccion": "geronimo helguera",
+      "id": 1
+    },
+    {
+      "nomYape": "leonardo leiro ",
+      "dni": "1782981",
+      "direccion": "geronimo helguera 29",
+      "id": 2
+    }
+  ],
+  "cuentaCorriente": [
+    {
+      "cliente": "lucas leiro",
+      "clientesId": 1,
+      "deuda": "220",
+      "id": 1
+    }
+  ],
+  "pagosCuentaCorriente": [
+    {
+      "clientesId": 1,
+      "pago": 90,
+      "id": 1
+    },
+    {
+      "clientesId": 2,
+      "pago": 30,
+      "id": 2
+    }
+  ],
+  "EstadoDeCaja": [
+    {
+      "efectivo": 220,
+      "id": 1
+    },
+    {
+      "ventasEnCuentaCorriente": 220,
+      "id": 2
+    },
+    {
+      "VentasTrasferencias": 0,
+      "id": 3
+    }
+  ],
+  "ingresoDinero": [],
+  "salidaDinero": [],
+  "user": [
+    {
+      "id": 1,
+      "nombreUsuario": "lucasleiro",
+      "email": "lucasleiroa@gmail.com",
+      "contrasena": "lucas1248759"
+    },
+    {
+      "id": 2,
+      "nombreUsuario": "hotelmiami",
+      "email": "lucasleiroa@gmail.com",
+      "contrasena": "hotel580"
+    }
+  ]
+}

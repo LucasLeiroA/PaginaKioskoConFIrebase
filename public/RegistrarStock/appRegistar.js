@@ -36,11 +36,12 @@ function ingresoDb() {
 
 
     var editStatus = false;
+
     const cuerpoTabla = document.getElementById("CuerpoTabla");
 
  window.addEventListener("DOMContentLoaded", async (e) =>{
      
-     document.getElementById("CuerpoTabla").innerHTML = " ";
+  document.getElementById("CuerpoTabla").innerHTML ="";
      let stock = await getItems(coleccion)
      var cat;
      try {      
@@ -109,15 +110,29 @@ function ingresoDb() {
            try {
              let id = (e.target.dataset.id);
             
-             deleteSingleItem(coleccion, id)
+             deleteSingleItem(coleccion, id);
+
              swal({
                 title: "Producto Eliminido!",
                 icon: "success",
-              }) 
-             location.reload()
+              }); 
+              let intervalo;
+              window.addEventListener( "click" , function(){
+                clearInterval(intervalo); //Al escribir, limpio el intervalo
+                intervalo = setInterval(function(){ //Y vuelve a iniciar
+                  location.reload();  
+                    clearInterval(intervalo); //Limpio el intervalo
+                }, 1000);
+            }, false);
+             
+              
+            
            } catch (error) {
-             console.log(error);
+            console.log(error);
            }
+
+          
+
          })
          )
 
@@ -126,8 +141,9 @@ function ingresoDb() {
      
          }catch (err) {
      
-             alert(err)
-         }          
+             console.log(err)
+         }   
+            
 })
 
 
@@ -167,24 +183,29 @@ function ingresoDb() {
             title: "Producto Agregado!",
             icon: "success",
           }))
+          location.reload();
     }else{
         await modificarItem("articulo" , var_id ,nuevaData).then(
             swal({
                 title: "Producto Modificado!",
                 icon: "success",
               }) 
-        )
+              )
+              location.reload();
     }
 
 
     } catch (err) {
-        swal(err)
+      swal({
+        title: err,
+        icon: "error",
+      }) 
     }
     }else{
         alert("Todos los campos deben estas cargados correctamente")
     }
        limpiarCeldas();
-       location.reload();
+       
 }
 
 function limpiarCeldas(){
@@ -198,5 +219,114 @@ function cancelar() {
     document.getElementById("idCantidad").value="";
     document.getElementById("idPrecioCompra").value="";
     document.getElementById("idPrecioVenta").value="";
-    
+    location.reload();
 }
+
+
+let cambio = document.getElementById("idArticulo")
+let intervalo;
+cambio.addEventListener("keyup", function(){
+  clearInterval(intervalo); //Al escribir, limpio el intervalo
+  intervalo = setInterval(async(e)=>{
+ 
+    document.getElementById("CuerpoTabla").innerHTML ="";
+    var cat;
+    let stock = await getItems("articulo");
+  
+    let nombreSolicitado = document.getElementById("idArticulo").value;
+  
+    let texto = nombreSolicitado.toLowerCase();
+    let nombre;
+  
+    for (let item of stock) {
+  
+      nombre = item.nombre.toLowerCase();
+      if (nombre.indexOf(texto) != -1) {
+        switch (parseInt(item.categoriaId)) {
+          case 1:
+               cat =  "comestibles";
+               break;
+         case 2:
+               cat = "bebidas";
+            break;
+        case 3:
+               cat = "cigarrilos";
+            break;
+      case 4:
+              cat = "golosinas";
+          break;
+       
+           default:
+               break;
+       }
+                
+                 document.getElementById("CuerpoTabla").innerHTML+= 
+             `<tr>
+                 <th scope="row">${item.id}</th>
+                 <td>${item.nombre}</td>
+                 <td>${item.cantidad}</td>
+                 <td>${cat}</td>
+                 <td>$${item.PrecioCompra}</td>
+                 <td>$${item.PrecioVenta}</td>
+                 <td><button class="btn-modificar" data-id="${item.id}">M</button></td>
+                 <td><button class="btn-eliminar" data-id="${item.id}">x</button></td>
+             </tr>`;
+      }
+    }
+  
+    const btnsModificar = cuerpoTabla.querySelectorAll(".btn-modificar");
+    btnsModificar.forEach((btn) =>
+      btn.addEventListener("click", async (e) => {  
+        try {
+          let id = (e.target.dataset.id);
+          var_id = id;
+          editStatus = true;
+         let stock = await getItems(coleccion);
+         for (const item of stock) {
+          if(item.id == id){
+  
+               document.getElementById("idArticulo").value=item.nombre;
+               document.getElementById("idCantidad").value=item.cantidad;
+               document.getElementById("idPrecioCompra").value=item.PrecioCompra;
+               document.getElementById("idPrecioVenta").value=item.PrecioVenta;
+            
+          }
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      })
+    );
+  
+    const btnsEliminar = cuerpoTabla.querySelectorAll(".btn-eliminar");
+    btnsEliminar.forEach((btn)=>
+    btn.addEventListener("click", async (e) => {  
+      try {
+        let id = (e.target.dataset.id);
+       
+        deleteSingleItem(coleccion, id)
+        swal({
+           title: "Producto Eliminido!",
+           icon: "success",
+         }) 
+
+         let valo;
+         window.addEventListener( "click" , function(){
+           clearInterval(valo); //Al escribir, limpio el intervalo
+           valo = setInterval(function(){ //Y vuelve a iniciar
+             location.reload();  
+               clearInterval(valo); //Limpio el intervalo
+           }, 1500);
+       }, false);
+
+      } catch (error) {
+        console.log(error);
+      }
+    
+    })
+    )
+   
+    clearInterval(intervalo); //Limpio el intervalo
+  }, 1200);
+}, false);
+

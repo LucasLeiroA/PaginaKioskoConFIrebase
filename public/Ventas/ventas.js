@@ -19,9 +19,7 @@ function principal() {
   document
     .getElementById("buscador")
     .addEventListener("click", buscarArticuloContado);
-  document
-    .getElementById("calcular")
-    .addEventListener("click", calcularVentaContado);
+
   document
     .getElementById("cancelarVenta")
     .addEventListener("click", cancelarVentaContado);
@@ -35,9 +33,7 @@ function principal() {
   document
     .getElementById("aceptarVenta2")
     .addEventListener("click", aceptarVentaCuentaCorriente);
-  document
-    .getElementById("calcularCuentaCorriente")
-    .addEventListener("click", calcularVentaCuentaCorriente);
+
   document
     .getElementById("buscador1")
     .addEventListener("click", buscardorArticulosCuentaCorriente);
@@ -48,9 +44,7 @@ function principal() {
   document
     .getElementById("buscador_articulo_transferencia")
     .addEventListener("click", buscadorArticuloTarjeta);
-  document
-    .getElementById("calcular_venta_tarjeta")
-    .addEventListener("click", calcularVentaTarjeta);
+
   document
     .getElementById("cancelarVenta_tarjeta")
     .addEventListener("click", cancelarVentaTarjeta);
@@ -115,25 +109,25 @@ async function buscarArticuloContado() {
         "selectorArticulos"
       ).innerHTML += `<td><Button class="btn btn-outline-dark" id="btn-seleccionar"  data-id="${item.id}">${item.nombre}</Button></td><br>`;
     }
-    const btnsSeleccionar =
-      selectorArticulos.querySelectorAll("#btn-seleccionar");
-    btnsSeleccionar.forEach((btn) =>
-      btn.addEventListener("click", async (e) => {
-        try {
-          let id = e.target.dataset.id;
-          var_id = id;
-          let articulo = await getItems("articulo");
-          for (const item of articulo) {
-            if (item.id == id) {
-              document.getElementById("articuloContado").value = item.nombre;
-            }
-          }
-        } catch (error) {
-          console.log(error);
-        }
-      })
-    );
   }
+  const btnsSeleccionar =
+    selectorArticulos.querySelectorAll("#btn-seleccionar");
+  btnsSeleccionar.forEach((btn) =>
+    btn.addEventListener("click", async (e) => {
+      try {
+        let id = e.target.dataset.id;
+        var_id = id;
+        let articulo = await getItems("articulo");
+        for (const item of articulo) {
+          if (item.id == id) {
+            document.getElementById("articuloContado").value = item.nombre;
+          }
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    })
+  );
 
   if (nombre == "") {
     document.getElementById(
@@ -142,24 +136,49 @@ async function buscarArticuloContado() {
   }
 }
 
-async function calcularVentaContado() {
-  let precio;
+let cambioContado = document.getElementById("cantidadContado")
+let intervaloContado;
+cambioContado.addEventListener("keyup", function(){
+  clearInterval(intervaloContado); //Al escribir, limpio el intervalo
+  intervaloContado = setInterval(async function(){ //Y vuelve a iniciar
+    let precio;
 
-  let total;
-  let nombreArt = document.getElementById("articuloContado").value;
-  let articulo = await getItems("articulo");
-  let cantidad = document.getElementById("cantidadContado").value;
-
-  for (let item of articulo) {
-    if (nombreArt == item.nombre) {
-      precio = item.PrecioVenta;
+    let total;
+    let nombreArt = document.getElementById("articuloContado").value;
+    let articulo = await getItems("articulo");
+    let cantidad = document.getElementById("cantidadContado").value;
+  
+    for (let item of articulo) {
+      if (nombreArt == item.nombre) {
+        precio = item.PrecioVenta;
+      }
     }
-  }
+  
+    total = parseInt(precio * cantidad);
+  
+    document.getElementById("totalContado").value = total;
+      clearInterval(intervaloContado); //Limpio el intervalo
+  }, 500);
+}, false);
 
-  total = parseInt(precio * cantidad);
+// async function calcularVentaContado() {
+//   let precio;
 
-  document.getElementById("totalContado").value = total;
-}
+//   let total;
+//   let nombreArt = document.getElementById("articuloContado").value;
+//   let articulo = await getItems("articulo");
+//   let cantidad = document.getElementById("cantidadContado").value;
+
+//   for (let item of articulo) {
+//     if (nombreArt == item.nombre) {
+//       precio = item.PrecioVenta;
+//     }
+//   }
+
+//   total = parseInt(precio * cantidad);
+
+//   document.getElementById("totalContado").value = total;
+// }
 
 function cancelarVentaContado() {
   document.getElementById("cliente").value = "";
@@ -230,21 +249,31 @@ async function aceptarVentaContado() {
 
     await modificarItem("articulo", artId, newData);
 
-    alert("Venta Realizada");
+    swal({
+      title: "Venta Realizada",
+      icon: "success",
+    });
+   
 
     document.getElementById("articuloContado").value = "";
     document.getElementById("cantidadContado").value = "";
     document.getElementById("totalContado").value = "0";
   } else if (cant == 0) {
-    alert("no hay stock de este procuto");
+    swal({
+      title: "NO hay stock de este procuto",
+      icon: "error",
+    });
+   
   } else {
-    alert(
-      "La cantidad selecciona tiene que se mayor a 0 o menor que " +
-        cant +
-        " ya que esa es la cantidad de " +
-        nombre +
-        " disponible."
-    );
+    swal({
+      title: "La cantidad selecciona tiene que se mayor a 0 o menor que " +
+      cant +
+      " ya que esa es la cantidad de " +
+      nombre +
+      " disponible.",
+      icon: "error",
+    });
+  
     document.getElementById("articuloContado").value = "";
     document.getElementById("cantidadContado").value = "";
     document.getElementById("totalContado").value = "0";
@@ -348,25 +377,6 @@ async function buscardorArticulosCuentaCorriente() {
 }
 
 
-async function calcularVentaCuentaCorriente() {
-
-  let precio;
-
-  let total;
-  let nombreArt = document.getElementById("articuloCuentaCorriente").value;
-  let articulo = await getItems("articulo");
-  let cantidad = document.getElementById("cantidadCuentaCorriente").value;
-
-  for (let item of articulo) {
-    if (nombreArt == item.nombre) {
-      precio = item.PrecioVenta;
-    }
-  }
-
-  total = parseInt(precio * cantidad);
-
-  document.getElementById("TotalCuentaCorriente").value = total;
-}
 
 async function aceptarVentaCuentaCorriente() {
   let articulo = await getItems("articulo");
@@ -475,18 +485,27 @@ async function aceptarVentaCuentaCorriente() {
       document.getElementById("articuloCuentaCorriente").value = "";
       document.getElementById("cantidadCuentaCorriente").value = "";
       document.getElementById("TotalCuentaCorriente").value = "0";
+      swal({
+        title: "Venta Realizada",
+        icon: "success",
+      });
 
-      alert("Venta Realizada");
+      
     } else if (cant == 0) {
-      alert("no hay stock de este procuto");
+      swal({
+        title: "NO hay stock de este procuto",
+        icon: "error",
+      });
     } else {
-      alert(
-        "La cantidad selecciona tiene que se mayor a 0 o menor que " +
-          cant +
-          " ya que esa es la cantidad de " +
-          nombre +
-          " disponible."
-      );
+      swal({
+        title: "La cantidad selecciona tiene que se mayor a 0 o menor que " +
+        cant +
+        " ya que esa es la cantidad de " +
+        nombre +
+        " disponible.",
+        icon: "error",
+      });
+     
       document.getElementById("cliente").value = "";
       document.getElementById("articuloCuentaCorriente").value = "";
       document.getElementById("cantidadCuentaCorriente").value = "";
@@ -496,6 +515,32 @@ async function aceptarVentaCuentaCorriente() {
     console.log(err);
   }
 }
+
+let cambioCuentaCorriente = document.getElementById("cantidadCuentaCorriente")
+let intervaloCC;
+cambioCuentaCorriente.addEventListener("keyup", function(){
+  clearInterval(intervaloCC); //Al escribir, limpio el intervalo
+  intervaloCC = setInterval(async function(){ //Y vuelve a iniciar
+    let precio;
+
+    let total;
+    let nombreArt = document.getElementById("articuloCuentaCorriente").value;
+    let articulo = await getItems("articulo");
+    let cantidad = document.getElementById("cantidadCuentaCorriente").value;
+  
+    for (let item of articulo) {
+      if (nombreArt == item.nombre) {
+        precio = item.PrecioVenta;
+      }
+    }
+  
+    total = parseInt(precio * cantidad);
+  
+    document.getElementById("TotalCuentaCorriente").value = total;
+      clearInterval(intervaloCC); //Limpio el intervalo
+  }, 500);
+}, false);
+
 
 function cancelarVentaCuentaCorriente() {
   document.getElementById("cliente").value = "";
@@ -559,26 +604,34 @@ async function buscadorArticuloTarjeta() {
 }
 
 
-async function calcularVentaTarjeta() {
-  let precio;
-  let total;
 
-  let nombreArt = document.getElementById("articuloTarjeta").value;
-
-  let articulo = await getItems("articulo");
+let cambioTarjeta = document.getElementById("cantidad_tarjeta")
+let intervaloTarjeta;
+cambioTarjeta.addEventListener("keyup", function(){
+  clearInterval(intervaloTarjeta); //Al escribir, limpio el intervalo
+  intervaloTarjeta = setInterval(async function(){ //Y vuelve a iniciar
+    let precio;
+    let total;
   
-  let cantidad = document.getElementById("cantidad_tarjeta").value;
-
-  for (let item of articulo) {
-    if (nombreArt == item.nombre) {
-      precio = item.PrecioVenta;
+    let nombreArt = document.getElementById("articuloTarjeta").value;
+  
+    let articulo = await getItems("articulo");
+    
+    let cantidad = document.getElementById("cantidad_tarjeta").value;
+  
+    for (let item of articulo) {
+      if (nombreArt == item.nombre) {
+        precio = item.PrecioVenta;
+      }
     }
-  }
+  
+    total = parseInt(precio * cantidad);
+  
+    document.getElementById("total_tarjeta").value = total;
+      clearInterval(intervaloTarjeta); //Limpio el intervalo
+  }, 500);
+}, false);
 
-  total = parseInt(precio * cantidad);
-
-  document.getElementById("total_tarjeta").value = total;
-}
 
 function cancelarVentaTarjeta() {
   document.getElementById("articuloTarjeta").value = "";
@@ -649,7 +702,10 @@ async function aceptarVentaTarjeta() {
         }
       );
 
-      alert("Venta Realizada");
+      swal({
+        title: "Venta Realizada",
+        icon: "sucess",
+      });
       document.getElementById("articuloTarjeta").value = "";
       document.getElementById("cantidad_tarjeta").value = "";
       document.getElementById("total_tarjeta").value = "0";
@@ -657,15 +713,20 @@ async function aceptarVentaTarjeta() {
       alert(err);
     }
   } else if (cant == 0) {
-    alert("no hay stock de este procuto");
+    swal({
+      title: "NO hay stock de este procuto",
+      icon: "error",
+    });
   } else {
-    alert(
-      "La cantidad selecciona tiene que se mayor a 0 o menor que " +
-        cant +
-        " ya que esa es la cantidad de " +
-        nombre +
-        " disponible."
-    );
+    swal({
+      title:   "La cantidad selecciona tiene que se mayor a 0 o menor que " +
+      cant +
+      " ya que esa es la cantidad de " +
+      nombre +
+      " disponible.",
+      icon: "error",
+    });
+
     document.getElementById("articuloTarjeta").value = "";
     document.getElementById("cantidad_tarjeta").value = "";
     document.getElementById("total_tarjeta").value = "0";

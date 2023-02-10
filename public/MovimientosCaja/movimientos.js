@@ -4,18 +4,7 @@ var mes = date.getMonth();
 var fecha = date.getDate();
 var hora = date.getHours()
 
-let url = window.location.href;
-
-localStorage.setItem("UrlMovimientos" , url);
-
-let pantalla = localStorage.getItem("urlPatallaIncial");
-let admin = localStorage.getItem("urlAdmin");
-let ventas = localStorage.getItem("urlVentas");
-let anulacion = localStorage.getItem("urlAnulacion");
-let registrar = localStorage.getItem("urlRegistrarClientes");
-let cobranza = localStorage.getItem("urlCobranza");
-let reportes = localStorage.getItem("urlReportes");
-
+import { IngresarDatos , getItems , modificarItem} from "../firebase.js";
 function principal(){
 
     document.getElementById("aceptar").addEventListener("click", aceptarTipo)
@@ -46,6 +35,7 @@ async function aceptarTipo(){
             
         }
         if (TipoVenta=="SalidaDinero") {
+
             document.getElementById("salida1").style.background="#3b4652"
             document.getElementById("salida1").innerHTML="";
             document.getElementById("pieTabla").innerHTML="";
@@ -64,7 +54,11 @@ async function aceptarTipo(){
         }
 
     } catch (err) {
-        alert(err)
+        
+      swal({
+        title: err,
+        icon: "error",
+      });
     }
           
 }   
@@ -76,7 +70,7 @@ async function IngresoDeDinero(){
     let final;
 try {
     if( descripcion != "" && money > 0){
-        let ingreso=await axios.post("http://localhost:3001/ingresoDinero",{
+        await IngresarDatos("ingresoDinero",{
         dinero:parseInt(money),
         descripcion:descripcion,
         mes:mes,
@@ -84,36 +78,50 @@ try {
         hora:hora
 
     })}else(
-        alert("Debe cargar ambos campos")
+        
+      swal({
+        title: "Debe cargar ambos campos",
+        icon: "error",
+      })
     )
 
-    let estado=await axios.get("http://localhost:3001/EstadoDeCaja");
-    for (let item of estado.data) {
+    let estado = await getItems("EstadoDeCaja");
+    for (let item of estado) {
 
-        if (item.id==1) {
+        if (item.id== "1") {
             total=item.efectivo;    
         }
     }
-     final=total+parseInt(money);
-    let modiestado=await axios.put("http://localhost:3001/EstadoDeCaja/1",{
+     final = total+parseInt(money);
+
+    await modificarItem("EstadoDeCaja", "1" ,{
         efectivo:final
     });
 
+    swal({
+        title: "Ingreso de dinero Correcto",
+        icon: "success",
+      })
+
    limpiar();
 } catch (err) {
-    alert(err)
+    swal({
+        title: err,
+        icon: "error",
+      })
 }
 
 }
 async function salidaDeDinero(){
     
-    let descripcion=document.getElementById("areatext").value;
-    let money=document.getElementById("ingreso1").value;
+    let descripcion = document.getElementById("areatext").value;
+    let money = document.getElementById("ingreso1").value;
     let total;
     let final;
+
     try {
         if( descripcion != "" && money  > 0){
-              let ingreso=await axios.post("http://localhost:3001/salidaDinero",{
+        await IngresarDatos("salidaDinero",{
         dinero:parseInt(money),
         descripcion:descripcion,
         mes:mes,
@@ -122,23 +130,36 @@ async function salidaDeDinero(){
         }
      
     )}else(
-        alert("Debe cargar ambos campos")
+        swal({
+            title: "Debe cargar ambos campos",
+            icon: "error",
+          })
+      
     )
 
-    let estado=await axios.get("http://localhost:3001/EstadoDeCaja");
-    for (let item of estado.data) {
+    let estado = await getItems("EstadoDeCaja");
+    for (let item of estado) {
 
-        if (item.id==1) {
+        if (item.id == "1") {
             total=item.efectivo;    
         }
     }
      final=total-parseInt(money);
-    let modiestado=await axios.put("http://localhost:3001/EstadoDeCaja/1",{
+    await modificarItem("EstadoDeCaja", "1" ,{
         efectivo:final
     });
+
+    swal({
+        title: "Salida de dinero Correcto",
+        icon: "success",
+      })
+
     limpiar();
 } catch (err) {
-    alert(err)
+    swal({
+        title: err,
+        icon: "error",
+      })
 }
 }
 

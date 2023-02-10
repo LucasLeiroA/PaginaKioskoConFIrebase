@@ -1,39 +1,70 @@
 window.onload = principal;
 
+import {getItems} from "./firebase.js"
+
+
 function principal() {
   document
     .getElementById("btn_incio")
     .addEventListener("click", loginFormulario);
 }
 
-var var_usuario = "hotelmiami";
-var var_contrasena = "hotel580";
+
 
 let url = window.location.href;
 
 localStorage.setItem("urlInicio", url);
 
 async function loginFormulario() {
-  usuario = document.getElementById("input_usuario").value;
-  contrasena = document.getElementById("input_contrasena").value;
+  
+  const usuarios = await getItems("usuarios");
+
+  //constantes donde se guardos los datos del usuario
+
+  let correo;
+  let password;
+  let nom_usuario;
+
+
+  for (const item of usuarios) {
+    if(item.id == "2"){
+      correo = item.correo;
+      password = item.password;
+      nom_usuario = item.username;
+    }
+  }
+
+
+  let usuario = document.getElementById("input_usuario").value;
+  let contrasena = document.getElementById("input_contrasena").value;
 
   try {
-    if (usuario == var_usuario && contrasena == contrasena) {
+    if ((usuario == correo || usuario == nom_usuario) && contrasena == password) {
 
-        // el true el para esta logeado y el false cuando no lo estas
-      // axios.put("http://localhost:3001/login/" + 1, {
-      //        logeado: true,
-      // });
+      
 
-      // alert("Dato Modificado Correctamente");
-      window.location="./PantallaInicial/principal.html";
+
+      swal({
+        title: "Acceso Permitido!",
+        icon: "success",
+      });
+
+        
+         window.location="./PantallaInicial/principal.html"
+
+
+
 
     } else {
-      alert("Usuario o Contraseña Incorrectos");
+      swal({
+        title: "Usuario o Contraseña Incorrectos!",
+        icon: "error",
+      });
     }
   } catch (err) {
     alert(err);
   }
 }
+
 
 

@@ -10,9 +10,10 @@
       integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
       crossorigin="anonymous"
     />
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    <script src="cobranza.js"></script>
-    <link rel="stylesheet" href="cobranza.css" />
+    <script type="module" src="cobranza.js"></script>
+    <link rel="stylesheet"  href="cobranza.css" />
     <link rel="shortcut icon" href="/imagenes/favicon.jpg" />
     <title>Cobranza CuentaCorriente</title>
   </head>
@@ -88,7 +89,7 @@
     <div id="container">
       <section id="section1">
                     <h3>Cobranza CuentaCorriente</h3>
-                    <label for="">Nombre Y Apellido:</label>
+                    <label for="">Nombre O Habitacion:</label>
                     <input id="inpu" type="text" readonly /><br />
                     <label for="">Dni:</label>
                     <input id="inpu1" type="text" readonly /><br />
@@ -106,7 +107,17 @@
                     <button id="btnpagar" class="btn btn-secondary">Pagar</button>
       </section>
       <section id="section2" class="border border-dark rounded-3">
-                    <button id="mostrar" class="btn btn-dark"> Ver Clientes</button>
+                    <h3 id="mostrar" class="btn btn-dark">Clientes</h3>
+                    <div id="cont-buscador">
+                      <input type="text" id="input-buscador"  placeholder="buscar">
+
+                      <button id="btn-buscador">
+                        <img
+                          id="lupa"
+                          src="../imagenes/pngtree-magnifying-glass-icon-png-image_1644200.jpg"
+                          alt=""
+                        /></button>
+                    </div>
                     <div id="div_mostrar">
                            <table class="table" id="tabla_muestra" >
                     <tbody id="cuerpoTabla"></tbody>

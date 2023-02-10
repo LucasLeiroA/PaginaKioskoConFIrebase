@@ -60,6 +60,8 @@ async function loginFormulario() {
         title: "Usuario o Contraseña Incorrectos!",
         icon: "error",
       });
+      let usuario = document.getElementById("input_usuario").value="";
+      let contrasena = document.getElementById("input_contrasena").value="";
     }
   } catch (err) {
     alert(err);

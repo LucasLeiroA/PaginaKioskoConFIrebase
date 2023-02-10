@@ -48,6 +48,8 @@ async function ingresoAdmin(){
         title: "Usuario o Contraseña Incorrectos",
         icon: "error",
       })
+      let input_usuario = document.getElementById("nombre_admin").value="";
+    let input_password = document.getElementById("contrasena_admin").value="";
     }
 
 
